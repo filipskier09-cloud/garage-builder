@@ -5,135 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dream Car Garage</title>
 <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #1a1a1a;
-        color: #fff;
-        margin: 0;
-        padding: 0;
-    }
-    header {
-        background-color: #111;
-        padding: 10px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    header h1 {
-        margin: 0;
-        font-size: 1.5em;
-    }
-    .garage {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 15px;
-        padding: 20px;
-    }
-    .car-card {
-        background-color: #222;
-        border-radius: 0;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transition: transform 0.2s, background-color 0.2s;
-        cursor: pointer;
-    }
-    .car-card:hover {
-        background-color: #0055ff;
-        transform: scale(1.05);
-    }
-    .car-card img {
-        width: 100%;
-        border-bottom: 1px solid #333;
-    }
-    .car-card h2, .car-card p {
-        margin: 10px 0;
-        text-align: center;
-    }
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        width: 300px;
-        margin: 20px auto;
-    }
-    input, button {
-        padding: 8px;
-        border-radius: 5px;
-        border: none;
-    }
-    button {
-        background-color: #ff6600;
-        color: white;
-        cursor: pointer;
-    }
-    .remove-btn {
-        background-color: #ff3333;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        margin-bottom: 10px;
-        cursor: pointer;
-    }
-</style>
-</head>
-<body>
-<header>
-    <h1>Dream Car Garage</h1>
-</header>
-
-<!-- Car Submission Form -->
-<section>
-    <form id="addCarForm">
-        <input type="text" id="carName" placeholder="Car Name" required>
-        <input type="text" id="carBrand" placeholder="Brand" required>
-        <input type="text" id="carYear" placeholder="Year" required>
-        <input type="text" id="carImage" placeholder="Image URL" required>
-        <button type="submit">Add Car</button>
-    </form>
-</section>
-
-<!-- Garage Display -->
-<div class="garage" id="garage"></div>
-
-<script>
-    const garage = document.getElementById('garage');
-    let cars = JSON.parse(localStorage.getItem('dreamCars')) || [];
-
-    function displayCars() {
-        garage.innerHTML = '';
-        cars.forEach((car, index) => {
-            const card = document.createElement('div');
-            card.classList.add('car-card');
-            card.innerHTML = `
-                <button class="remove-btn" onclick="removeCar(${index})">Remove</button>
-                <img src="${car.image}" alt="${car.name}">
-                <h2>${car.brand} ${car.name} (${car.year})</h2>
-            `;
-            garage.appendChild(card);
-        });
-    }
-
-    function removeCar(index) {
-        cars.splice(index, 1);
-        localStorage.setItem('dreamCars', JSON.stringify(cars));
-        displayCars();
-    }
-
-    document.getElementById('addCarForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const name = document.getElementById('carName').value;
-        const brand = document.getElementById('carBrand').value;
-        const year = document.getElementById('carYear').value;
-        const image = document.getElementById('carImage').value;
-        cars.push({ name, brand, year, image });
-        localStorage.setItem('dreamCars', JSON.stringify(cars));
-        displayCars();
-        e.target.reset();
-    });
-
-    displayCars();
-</script>
-</body>
+body {
+font-family: 'Arial', sans-serif;
+background-color: #1a1a1a;
+color: #fff;
+margin: 0;
+padding: 0;
+}
+header {
+background-color: #111;
+padding: 10px 20px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+header h1 {
+margin: 0;
+font-size: 1.5em;
+}
+.add-btn {
+background-color: #ff6600;
+border: none;
+color: white;
+font-size: 1.5em;
+border-radius: 50%;
+width: 40px;
+height: 40px;
+cursor: pointer;
+}
+.garage {
+display: grid;
+grid-template-columns: repeat(6, 1fr);
+gap: 15px;
+padding: 20px;
+}
+.car-card {
+background-color: #222;
+width: 100%;
+aspect-ratio: 1 / 1;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+transition: transform 0.2s, background-color 0.3s;
+}
+.car-card:hover {
+background-color: #0055ff;
+}
+.car-card img {
+width: 100%;
+height: auto;
+}
+.remove-btn {
+display: none;
+background-color: red;
+color: white;
+border: none;
+padding: 5px;
+cursor: pointer;
+position: absolute;
+top: 5px;
+right: 5px;
+}
+.car-card.show-remove .remove-btn {
+display: block;
+}
+#addCarModal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.8);
 </html>
