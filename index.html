@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Car Garage</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #1a1a1a;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #111;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    header h1 {
+        margin: 0;
+        font-size: 1.5em;
+    }
+    .garage {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 20px;
+    }
+    .car-card {
+        background-color: #222;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: transform 0.2s;
+    }
+    .car-card:hover {
+        transform: scale(1.05);
+    }
+    .car-card img {
+        width: 100%;
+        border-bottom: 1px solid #333;
+    }
+    .car-card h2 {
+        margin: 10px 0 5px 0;
+        font-size: 1.1em;
+    }
+    .car-card p {
+        margin: 0 0 10px 0;
+        font-size: 0.9em;
+        color: #aaa;
+    }
+    form {
+        display: flex;
+        gap: 10px;
+    }
+    input, button {
+        padding: 8px;
+        border-radius: 5px;
+        border: none;
+    }
+    input {
+        flex: 1;
+    }
+    button {
+        background-color: #ff6600;
+        color: white;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>Dream Car Garage</h1>
+    <form id="addCarForm">
+        <input type="text" id="carName" placeholder="Car Name" required>
+        <input type="text" id="carImage" placeholder="Image URL" required>
+        <button type="submit">Add</button>
+    </form>
+</header>
+<div class="garage" id="garage"></div>
+
+<script>
+    const garage = document.getElementById('garage');
+
+    // Load cars from localStorage
+    let cars = JSON.parse(localStorage.getItem('dreamCars')) || [];
+
+    function displayCars() {
+        garage.innerHTML = '';
+        cars.forEach(car => {
+            const card = document.createElement('div');
+            card.classList.add('car-card');
+            card.innerHTML = `
+                <img src="${car.image}" alt="${car.name}">
+                <h2>${car.name}</h2>
+            `;
+            garage.appendChild(card);
+        });
+    }
+
+    document.getElementById('addCarForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('carName').value;
+        const image = document.getElementById('carImage').value;
+        cars.push({ name, image });
+        localStorage.setItem('dreamCars', JSON.stringify(cars));
+        displayCars();
+        e.target.reset();
+    });
+
+    displayCars();
+</script>
+</body>
+</html>
