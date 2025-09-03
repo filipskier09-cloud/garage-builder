@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Car Garage</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #1a1a1a;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+    }
+    header {
+        background-color: #111;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    header h1 {
+        margin: 0;
+        font-size: 1.5em;
+    }
+    .add-btn {
+        background-color: #ff6600;
+        border: none;
+        color: white;
+        font-size: 1.5em;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+    }
+    .garage {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 15px;
+        padding: 20px;
+    }
+    .car-card {
+        background-color: #222;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s, background-color 0.3s;
+    }
+    .car-card:hover {
+        background-color: #0055ff;
+    }
+    .car-card img {
+        width: 100%;
+        height: auto;
+    }
+    .remove-btn {
+        display: none;
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        cursor: pointer;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+    .car-card.show-remove .remove-btn {
+        display: block;
+    }
+    #addCarModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        background: #333;
+        padding: 20px;
+        border-radius: 5px;
+        width: 300px;
+    }
+    input, button {
+        padding: 8px;
+        margin: 5px 0;
+        width: 100%;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>Dream Car Garage</h1>
+    <button class="add-btn" id="openModal">+</button>
+</header>
+<div class="garage" id="garage"></div>
+
+<div id="addCarModal">
+    <div class="modal-content">
+        <h2>Add Car</h2>
+        <form id="addCarForm">
+            <input type="text" id="carName" placeholder="Car Name" required>
+            <input type="text" id="carBrand" placeholder="Brand" required>
+            <input type="text" id="carYear" placeholder="Year" required>
+            <input type="text" id="carImage" placeholder="Image URL" required>
+            <button type="submit">Add Car</button>
+            <button type="button" id="closeModal">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const garage = document.getElementById('garage');
+    const addCarModal = document.getElementById('addCarModal');
+    const openModal = document.getElementById('openModal');
+    const closeModal = document.getElementById('closeModal');
+
+    let cars = JSON.parse(localStorage.getItem('dreamCars')) || [];
+
+    function displayCars() {
+        garage.innerHTML = '';
+        cars.forEach((car, index) => {
+            const card = document.createElement('div');
+            card.classList.add('car-card');
+            card.innerHTML = `
+                <img src="${car.image}" alt="${car.name}">
+                <h2>${car.name}</h2>
+                <p>${car.brand} - ${car.year}</p>
+                <button class="remove-btn">Remove</button>
+            `;
+
+            card.addEventListener('click', (e) => {
+                if (!card.classList.contains('show-remove')) {
+                    card.classList.add('show-remove');
+                }
+            });
+
+            card.querySelector('.remove-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                cars.splice(index, 1);
+                localStorage.setItem('dreamCars', JSON.stringify(cars));
+                displayCars();
+            });
+
+            garage.appendChild(card);
+        });
+    }
+
+    openModal.addEventListener('click', () => {
+        addCarModal.style.display = 'flex';
+    });
+
+    closeModal.addEventListener('click', () => {
+        addCarModal.style.display = 'none';
+    });
+
+    document.getElementById('addCarForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('carName').value;
+        const brand = document.getElementById('carBrand').value;
+        const year = document.getElementById('carYear').value;
+        const image = document.getElementById('carImage').value;
+        cars.push({ name, brand, year, image });
+        localStorage.setItem('dreamCars', JSON.stringify(cars));
+        displayCars();
+        e.target.reset();
+        addCarModal.style.display = 'none';
+    });
+
+    displayCars();
+</script>
+</body>
+</html>
